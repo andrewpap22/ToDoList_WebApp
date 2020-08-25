@@ -1,0 +1,34 @@
+<%- include("header") -%>
+
+  <div class="box" id="heading">
+    <h1> <%= listTitle %> </h1>
+  </div>
+
+  <div class="box">
+    <% for (let i=0; i<newListItems.length; i++) { %>
+      <form action="/delete" method="POST"> <!--and this route is responsible for deleting items from the todolist-->
+        <div class="item">
+          <!-- similar to the submit button below... the onchange attr will post into our server if the checkbox
+               is clicked or not... and we give it a name to access it on our server with req.body.checkbox 
+              as we're doing with our button below.... 
+              about the value attr... we're passing the mongo documents there, and it contains a name as well as an id
+              so, we're giving that value to the checkbox so we can know which exactly item is being deleted...-->
+          <input type="checkbox" name="checkbox" value="<%= newListItems[i]._id %>" onchange="this.form.submit()">
+          <p><%=  newListItems[i].name  %></p>
+        </div>
+        <!-- The input hidden type, allows us to include data that can't be seen or modified by users when a form is submitted! for example the id of a content, or in our case the listName (the name of the list that the users creates in the browser) and now we can use that listTitle variable into our app.post("/delete) route to check what is the value of that list name where the user wants to delete a particular item from the list (if it's the homepage or some other page that the user created...) and then after the item deletion, we will redirect to the particular page where the user deleted the item using that listTitle variable...-->
+        <input type="hidden" name="listName" value="<%= listTitle %>"> 
+      </form>
+      <% } %>
+
+      <form class="item" action="/" method="post"> <!--this route is responsible for adding items to the todo list-->
+        <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+        <!-- Why did we give a value on the button of the variable listTitle?? 
+             Whenever we submit now our form, we got access to 2 things: 
+             1. the new item above...
+             2. the list below... -->
+        <button type="submit" name="list" value="<%= listTitle %>">+</button>
+      </form>
+  </div>
+
+<%- include("footer") -%>
